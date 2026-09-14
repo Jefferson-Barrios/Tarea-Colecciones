@@ -1,0 +1,29 @@
+@startuml
+class Producto {
+    - id: int
+    - nombre: String
+    - precio: double
+    + Producto(id: int, nombre: String, precio: double)
+    + getId(): int
+    + getNombre(): String
+    + getPrecio(): double
+    + setNombre(nombre: String): void
+    + setPrecio(precio: double): void
+    + toString(): String
+}
+
+class GestorProductos {
+    - productos: ArrayList<Producto>
+    + agregarProducto(producto: Producto): void
+    + mostrarProductos(): void
+    + actualizarProducto(id: int, nuevoPrecio: double): boolean
+    + eliminarProducto(id: int): boolean
+}
+
+class Main {
+    + main(args: String[]): void
+}
+
+GestorProductos "1" *-- "0..*" Producto : administra
+Main ..> GestorProductos : usa
+@enduml
