@@ -1,9 +1,15 @@
 package clases;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GestorProductos {
     private ArrayList<Producto> productos;
+    private static final String NOMBRE_ARCHIVO = "productos.txt";
 
     public GestorProductos() {
         this.productos = new ArrayList<>();
@@ -51,5 +57,39 @@ public class GestorProductos {
             }
         }
         return null;
+    }
+
+    public void guardarEnArchivo() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(NOMBRE_ARCHIVO))) {
+            for (Producto p : productos) {
+                String linea = p.getId() + "," + p.getNombre() + "," + p.getPrecio();
+                bw.write(linea);
+                bw.newLine();
+            }
+            System.out.println("Datos guardados correctamente en " + NOMBRE_ARCHIVO);
+        } catch (IOException e) {
+            System.out.println("Error al guardar en el archivo: " + e.getMessage());
+        }
+    }
+
+    public void cargarDesdeArchivo() {
+        productos.clear();
+        try (BufferedReader br = new BufferedReader(new FileReader(NOMBRE_ARCHIVO))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length == 3) {
+                    int id = Integer.parseInt(partes[0]);
+                    String nombre = partes[1];
+                    double precio = Double.parseDouble(partes[2]);
+                    productos.add(new Producto(id, nombre, precio));
+                }
+            }
+            System.out.println("Datos cargados correctamente desde " + NOMBRE_ARCHIVO);
+        } catch (IOException e) {
+            System.out.println("No se encontro el archivo " + NOMBRE_ARCHIVO + ". Se creara al guardar.");
+        } catch (NumberFormatException e) {
+            System.out.println("Error al leer datos del archivo: " + e.getMessage());
+        }
     }
 }
